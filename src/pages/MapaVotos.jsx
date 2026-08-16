@@ -1,98 +1,90 @@
 import React, { useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 
 export default function MapaVotos() {
-  const [cidadesMap, setCidadesMap] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Metas fixas por cidade para calcular a porcentagem
-  const metas = {
-    "Januária": 15000,
-    "Pirapora": 8000,
-    "São Francisco": 5000,
-    "Brasília de Minas": 4000,
-    "Montes Claros": 10000,
-    "Pintópolis": 2000,
+  const [apoiadores, setApoiadores] = useState([]);
+  const [metas] = useState({
+    "Januária": 5000,
+    "Montes Claros": 12000,
+    "Brasília de Minas": 3000,
+    "Manga": 2500,
+    "Itacarambi": 2000,
     "Juvenília": 1500
-  };
-
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec";
+  });
 
   useEffect(() => {
-    fetch(GOOGLE_API_URL)
-      .then(res => res.json())
-      .then(data => {
-        // Agrupar apoiadores por cidade
-        const agrupamento = {};
-        
-        if (Array.isArray(data)) {
-          data.forEach(apoiador => {
-            const nomeCidade = apoiador.cidade ? apoiador.cidade.trim() : "Desconhecida";
-            if (!agrupamento[nomeCidade]) {
-              agrupamento[nomeCidade] = { nome: nomeCidade, atual: 0, meta: metas[nomeCidade] || 3000, apoiadores: [] };
-            }
-            agrupamento[nomeCidade].atual += 1;
-            agrupamento[nomeCidade].apoiadores.push(apoiador);
-          });
-        }
-        
-        setCidadesMap(agrupamento);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error("Erro ao buscar dados do mapa:", err);
-        setIsLoading(false);
+    const q = query(collection(db, 'apoiadores'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const lista = [];
+      snapshot.forEach((doc) => {
+        lista.push({ id: doc.id, ...doc.data() });
       });
+      setApoiadores(lista);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const cidades = Object.values(cidadesMap).sort((a, b) => b.atual - a.atual);
+  // Agrupamento Dinâmico de Apoiadores por Cidade
+  const votosPorCidade = {};
+  apoiadores.forEach(ap => {
+    // Normalizar nome da cidade (remover espaços e padronizar maiúsculas) para evitar duplicatas erradas
+    let cidadeLimpa = ap.cidade?.trim();
+    if (!cidadeLimpa) cidadeLimpa = "Indefinida";
+    
+    if (!votosPorCidade[cidadeLimpa]) {
+      votosPorCidade[cidadeLimpa] = {
+        count: 0,
+        recentes: []
+      };
+    }
+    votosPorCidade[cidadeLimpa].count += 1;
+    
+    // Guardar os últimos 3 nomes para mostrar no mapa
+    if (votosPorCidade[cidadeLimpa].recentes.length < 3 && ap.nome) {
+      votosPorCidade[cidadeLimpa].recentes.push(ap.nome.split(' ')[0]);
+    }
+  });
+
+  // Ordenar cidades por volume de apoios
+  const cidadesOrdenadas = Object.keys(votosPorCidade).sort((a, b) => votosPorCidade[b].count - votosPorCidade[a].count);
 
   return (
     <div>
       <div className="header">
-        <h2>Mapa de Votos (Geomarketing)</h2>
+        <h2>Mapa de Votos (Tempo Real via Firebase)</h2>
       </div>
 
-      <div className="card" style={{marginBottom: '20px'}}>
-        <h3 style={{color: 'var(--primary)', marginBottom: '10px'}}>Metas Regionais</h3>
-        <p style={{color: 'var(--text-muted)', fontSize: '14px', marginBottom: '20px'}}>
-          Acompanhamento das metas de apoiadores e votos projetados por município do Norte de Minas.
+      <div className="card">
+        <p style={{color: 'var(--text-muted)', marginBottom: '30px', fontSize: '14px'}}>
+          Acompanhamento geográfico em tempo real com base nos cadastros do /eu-apoio.
         </p>
 
-        <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
-          {isLoading ? (
-            <p style={{color: 'var(--text-muted)'}}>Sincronizando banco de dados (Google Drive)...</p>
-          ) : cidades.length === 0 ? (
-            <p style={{color: 'var(--text-muted)'}}>Nenhum apoiador registrado ainda. Compartilhe o link /eu-apoio!</p>
-          ) : (
-            cidades.map((c, index) => {
-              const porcentagem = Math.min(100, Math.round((c.atual / c.meta) * 100));
-              return (
-                <div key={index} style={{backgroundColor: 'var(--bg-dark)', padding: '15px', borderRadius: '6px'}}>
-                  <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '10px'}}>
-                    <strong style={{color: 'var(--text-light)'}}>{c.nome}</strong>
-                    <span style={{color: 'var(--text-muted)', fontSize: '12px'}}>{c.atual} cadastros (Meta: {c.meta})</span>
-                  </div>
-                  <div style={{width: '100%', height: '10px', backgroundColor: '#333', borderRadius: '5px', overflow: 'hidden'}}>
-                    <div style={{width: `${porcentagem}%`, height: '100%', backgroundColor: 'var(--primary)'}}></div>
-                  </div>
-                  
-                  {/* Lista de apoiadores recentes da cidade */}
-                  <div style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #333'}}>
-                    <p style={{fontSize: '11px', color: '#666', textTransform: 'uppercase', marginBottom: '5px'}}>Apoiadores Recentes:</p>
-                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
-                      {c.apoiadores.slice(-5).reverse().map((ap, idx) => (
-                        <span key={idx} style={{backgroundColor: '#222', padding: '3px 8px', borderRadius: '12px', fontSize: '12px', color: '#999'}}>
-                          {ap.nome.split(' ')[0]}
-                        </span>
-                      ))}
-                      {c.apoiadores.length > 5 && <span style={{fontSize: '12px', color: '#666'}}>+{c.apoiadores.length - 5}</span>}
-                    </div>
-                  </div>
+        {cidadesOrdenadas.length === 0 ? (
+          <p style={{color: 'var(--text-muted)'}}>Carregando mapa ou banco de dados vazio...</p>
+        ) : (
+          cidadesOrdenadas.map(cidade => {
+            const count = votosPorCidade[cidade].count;
+            const meta = metas[cidade] || 1000; // Meta padrão se não estiver mapeada
+            const pct = Math.min(100, Math.round((count / meta) * 100));
+            const recentes = votosPorCidade[cidade].recentes.join(', ');
+
+            return (
+              <div key={cidade} style={{marginBottom: '20px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
+                  <span style={{fontWeight: 'bold', color: 'var(--text-light)'}}>{cidade}</span>
+                  <span style={{color: 'var(--primary)', fontWeight: 'bold'}}>{count} / {meta} apoios ({pct}%)</span>
                 </div>
-              )
-            })
-          )}
-        </div>
+                <div style={{width: '100%', backgroundColor: '#222', height: '12px', borderRadius: '6px', overflow: 'hidden'}}>
+                  <div style={{width: `${pct}%`, backgroundColor: 'var(--primary)', height: '100%', transition: 'width 1s ease-in-out'}}></div>
+                </div>
+                <p style={{fontSize: '11px', color: '#666', marginTop: '5px'}}>
+                  Recentes: {recentes}{votosPorCidade[cidade].count > 3 ? ' e outros...' : ''}
+                </p>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

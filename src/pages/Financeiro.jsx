@@ -1,179 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { db } from '../firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 
 export default function Financeiro() {
-  const [transacoes, setTransacoes] = useState([]);
+  const [lancamentos, setLancamentos] = useState([]);
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
-  const [tipo, setTipo] = useState('despesa'); // receita ou despesa
+  const [tipo, setTipo] = useState('receita');
 
   useEffect(() => {
-    const data = localStorage.getItem('crm_financeiro');
-    if (data) setTransacoes(JSON.parse(data));
+    const q = query(collection(db, 'financeiro'), orderBy('timestamp', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const lista = [];
+      snapshot.forEach((doc) => {
+        lista.push({ id: doc.id, ...doc.data() });
+      });
+      setLancamentos(lista);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const salvar = async (e) => {
     e.preventDefault();
-    const nova = { id: Date.now(), descricao, valor: parseFloat(valor), tipo };
-    const novaLista = [...transacoes, nova];
-    setTransacoes(novaLista);
-    localStorage.setItem('crm_financeiro', JSON.stringify(novaLista));
-    
-    setDescricao(''); setValor('');
+    if(!descricao || !valor) return;
 
-    // Integração silenciosa com Google Drive
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sheet: "Financeiro",
-          id: nova.id,
-          descricao: nova.descricao,
-          tipo: nova.tipo,
-          valor: nova.valor
-        })
+      await addDoc(collection(db, 'financeiro'), {
+        descricao,
+        tipo,
+        valor: parseFloat(valor),
+        timestamp: serverTimestamp()
       });
-    } catch (err) {
-      console.error("Erro ao salvar no Drive:", err);
+      setDescricao(''); setValor('');
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao salvar no banco.');
     }
   };
 
-  const deletar = (id) => {
-    const novaLista = transacoes.filter(t => t.id !== id);
-    setTransacoes(novaLista);
-    localStorage.setItem('crm_financeiro', JSON.stringify(novaLista));
-  };
-
-  const totalReceitas = transacoes.filter(t => t.tipo === 'receita').reduce((acc, t) => acc + t.valor, 0);
-  const totalDespesas = transacoes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0);
-  const saldo = totalReceitas - totalDespesas;
-
-  const gerarPDF = () => {
-    const doc = new jsPDF();
-    
-    doc.setFontSize(18);
-    doc.text("Prestação de Contas - Eleições 2026", 14, 22);
-    
-    doc.setFontSize(12);
-    doc.text("Candidato: HUDSON TESURA", 14, 30);
-    doc.text("Número: 33753 | CNPJ: 68.608.100/0001-39", 14, 36);
-    
-    doc.text(`Total Arrecadado: R$ ${totalReceitas.toFixed(2)}`, 14, 46);
-    doc.text(`Total Gasto: R$ ${totalDespesas.toFixed(2)}`, 14, 52);
-    doc.text(`Saldo em Caixa: R$ ${saldo.toFixed(2)}`, 14, 58);
-    
-    const tableColumn = ["Descrição", "Tipo", "Valor (R$)"];
-    const tableRows = [];
-    
-    transacoes.forEach(t => {
-      tableRows.push([
-        t.descricao,
-        t.tipo.toUpperCase(),
-        `R$ ${t.valor.toFixed(2)}`
-      ]);
-    });
-    
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 65,
-    });
-    
-    const finalY = doc.lastAutoTable.finalY || 65;
-    doc.line(14, finalY + 30, 100, finalY + 30);
-    doc.text("Assinatura do Candidato (Gov.br)", 14, finalY + 36);
-    doc.text("HUDSON TEIXEIRA PASSOS", 14, finalY + 42);
-    
-    doc.save("Prestacao_Contas_Tesura_33753.pdf");
-  };
+  const total = lancamentos.reduce((acc, curr) => {
+    return curr.tipo === 'receita' ? acc + (curr.valor || 0) : acc - (curr.valor || 0);
+  }, 0);
 
   return (
     <div>
-      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <h2>Controle Financeiro</h2>
-        <button onClick={gerarPDF} style={{backgroundColor: '#10B981', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}>
-          Exportar Prestação (PDF)
-        </button>
+      <div className="header">
+        <h2>Financeiro da Campanha (Tempo Real)</h2>
+        <span className="badge" style={{backgroundColor: total >= 0 ? '#10B981' : '#EF4444'}}>
+          Saldo: R$ {total.toFixed(2)}
+        </span>
       </div>
 
-      <div className="card-grid" style={{marginBottom: '20px'}}>
-        <div className="card">
-          <h3>Teto Legal (TSE)</h3>
-          <div className="value" style={{color: 'var(--text-muted)'}}>R$ 1.270.629,01</div>
-          <p style={{color: 'var(--text-muted)', fontSize: '12px', marginTop: '5px'}}>Limite máximo de gastos</p>
-        </div>
-        <div className="card">
-          <h3>Orçamento Alvo (Cenário 2)</h3>
-          <div className="value" style={{color: '#3B82F6'}}>R$ 125.565,00</div>
-          <p style={{color: 'var(--text-muted)', fontSize: '12px', marginTop: '5px'}}>Meta de arrecadação da campanha</p>
-        </div>
-      </div>
-
-      <div className="card-grid">
-        <div className="card">
-          <h3>Total Arrecadado (Receitas)</h3>
-          <div className="value" style={{color: 'var(--success)'}}>R$ {totalReceitas.toFixed(2)}</div>
-        </div>
-        <div className="card">
-          <h3>Total Gasto (Despesas)</h3>
-          <div className="value" style={{color: 'var(--primary)'}}>R$ {totalDespesas.toFixed(2)}</div>
-        </div>
-        <div className="card">
-          <h3>Saldo em Caixa</h3>
-          <div className="value">R$ {saldo.toFixed(2)}</div>
-        </div>
-      </div>
-
-      <div className="card" style={{marginBottom: '30px'}}>
-        <h3 style={{marginBottom: '15px'}}>Lançar Nova Transação</h3>
-        <form onSubmit={salvar} style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-          <input required placeholder="Descrição (Ex: Combustível, Gráfica)" value={descricao} onChange={e => setDescricao(e.target.value)} style={{flex: 2, minWidth: '200px'}} />
-          <input required type="number" step="0.01" placeholder="Valor (R$)" value={valor} onChange={e => setValor(e.target.value)} style={{flex: 1, minWidth: '150px'}} />
-          <select value={tipo} onChange={e => setTipo(e.target.value)} style={{flex: 1, minWidth: '150px'}}>
-            <option value="despesa">Despesa (Gasto)</option>
-            <option value="receita">Receita (Doação)</option>
+      <div className="card" style={{marginBottom: '20px'}}>
+        <h3 style={{marginBottom: '15px'}}>Novo Lançamento</h3>
+        <form onSubmit={salvar} style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+          <input type="text" placeholder="Descrição (Ex: Doação Pix)" value={descricao} onChange={e => setDescricao(e.target.value)} style={{flex: 2, minWidth: '200px'}} />
+          <input type="number" step="0.01" placeholder="Valor (R$)" value={valor} onChange={e => setValor(e.target.value)} style={{flex: 1, minWidth: '120px'}} />
+          <select value={tipo} onChange={e => setTipo(e.target.value)} style={{flex: 1, minWidth: '120px'}}>
+            <option value="receita">Receita (+)</option>
+            <option value="despesa">Despesa (-)</option>
           </select>
-          <button type="submit" className="primary">Salvar Lançamento</button>
+          <button type="submit" className="primary">Lançar</button>
         </form>
       </div>
 
       <div className="card">
-        <h3>Extrato ({transacoes.length})</h3>
-        {transacoes.length === 0 ? (
-          <p style={{color: 'var(--text-muted)', marginTop: '10px'}}>Nenhuma transação lançada ainda.</p>
-        ) : (
-          <div className="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Descrição</th>
-                  <th>Tipo</th>
-                  <th>Valor</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transacoes.map(t => (
-                  <tr key={t.id}>
-                    <td>{t.descricao}</td>
-                    <td style={{color: t.tipo === 'receita' ? 'var(--success)' : 'var(--primary)', fontWeight: 'bold', textTransform: 'capitalize'}}>{t.tipo}</td>
-                    <td>R$ {t.valor.toFixed(2)}</td>
-                    <td>
-                      <button onClick={() => deletar(t.id)} style={{background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '5px 10px'}}>
-                        Remover
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <table style={{width: '100%', textAlign: 'left', borderCollapse: 'collapse'}}>
+          <thead>
+            <tr style={{borderBottom: '1px solid #333'}}>
+              <th style={{padding: '10px 0'}}>Descrição</th>
+              <th style={{padding: '10px 0'}}>Tipo</th>
+              <th style={{padding: '10px 0'}}>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lancamentos.map((lan, idx) => (
+              <tr key={idx} style={{borderBottom: '1px solid #222'}}>
+                <td style={{padding: '10px 0', color: 'var(--text-light)'}}>{lan.descricao}</td>
+                <td style={{padding: '10px 0', color: lan.tipo === 'receita' ? '#10B981' : '#EF4444'}}>
+                  {lan.tipo.toUpperCase()}
+                </td>
+                <td style={{padding: '10px 0'}}>R$ {lan.valor?.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {lancamentos.length === 0 && <p style={{textAlign: 'center', marginTop: '20px', color: 'var(--text-muted)'}}>Nenhum lançamento registrado.</p>}
       </div>
     </div>
   );

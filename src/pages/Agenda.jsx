@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 
 export default function Agenda() {
   const [agendas, setAgendas] = useState([]);
@@ -9,52 +11,35 @@ export default function Agenda() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec";
-
   useEffect(() => {
-    // Busca as agendas via GET, passando sheet=Agenda
-    fetch(`${GOOGLE_API_URL}?sheet=Agenda`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          // Ordenar pela data do evento (mais recente primeiro)
-          setAgendas(data.reverse());
-        }
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error("Erro ao buscar agenda:", err);
-        setIsLoading(false);
+    const q = query(collection(db, 'agenda'), orderBy('data_evento', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const lista = [];
+      snapshot.forEach((doc) => {
+        lista.push({ id: doc.id, ...doc.data() });
       });
+      setAgendas(lista);
+      setIsLoading(false);
+    }, (error) => {
+      console.error("Erro ao buscar agenda:", error);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const salvarAgenda = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const novaAgenda = {
-      id: Date.now().toString(),
-      data_evento: dataEvento,
-      titulo,
-      cidade,
-      foco
-    };
-
     try {
-      await fetch(GOOGLE_API_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sheet: "Agenda",
-          ...novaAgenda
-        })
+      await addDoc(collection(db, 'agenda'), {
+        data_evento: dataEvento,
+        titulo,
+        cidade,
+        foco,
+        timestamp: serverTimestamp()
       });
-
-      // Atualiza estado local imediatamente para refletir na tela
-      setAgendas([novaAgenda, ...agendas]);
-      
-      // Limpar formulário
       setDataEvento(''); setTitulo(''); setCidade(''); setFoco('');
     } catch (error) {
       console.error(error);
@@ -93,7 +78,7 @@ export default function Agenda() {
         </p>
 
         {isLoading ? (
-          <p style={{color: 'var(--text-muted)'}}>Carregando agenda do Google Drive...</p>
+          <p style={{color: 'var(--text-muted)'}}>Carregando agenda do Firebase...</p>
         ) : agendas.length === 0 ? (
           <p style={{color: 'var(--text-muted)'}}>Nenhum evento agendado ainda.</p>
         ) : (

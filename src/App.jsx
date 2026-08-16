@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-do
 import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video, MapPin, Map, Scale, Smartphone, Menu } from 'lucide-react';
 import './index.css';
 
+// Firebase Auth
+import { auth } from './firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
+
 // Componentes (Carregamento Preguiçoso / Lazy Loading para economizar memória)
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Apoiadores = lazy(() => import('./pages/Apoiadores'));
@@ -20,35 +24,47 @@ const PromptsIA = lazy(() => import('./pages/PromptsIA'));
 const EuApoio = lazy(() => import('./pages/EuApoio'));
 
 // Componente para rotas protegidas
-const PrivateRoute = ({ children }) => {
-  const auth = localStorage.getItem('crm_auth');
-  return auth === 'true' ? children : <Navigate to="/login" />;
+const PrivateRoute = ({ children, isAuthenticated }) => {
+  return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true); // Evita piscar a tela de login ao dar F5
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const auth = localStorage.getItem('crm_auth');
-    if (auth === 'true') setIsAuthenticated(true);
+    // Escuta mudanças no login do Firebase
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      setIsLoadingAuth(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const handleLogin = (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
-    // Senha simples para isolamento básico pedido pelo usuário
-    if (password === '33753') {
-      localStorage.setItem('crm_auth', 'true');
-      setIsAuthenticated(true);
-    } else {
-      alert('Senha incorreta!');
+    try {
+      if (isRegistering) {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Conta criada com sucesso! Você já está logado.");
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (error) {
+      alert("Erro: " + error.message);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('crm_auth');
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
+    await signOut(auth);
   };
 
   // Layout Interno do CRM (só renderiza se logado via PrivateRoute)
@@ -153,6 +169,10 @@ function App() {
     </div>
   );
 
+  if (isLoadingAuth) {
+    return <div style={{display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', color: 'white', backgroundColor: '#0a0a0a'}}>Carregando...</div>;
+  }
+
   return (
     <BrowserRouter>
       <Suspense fallback={<div style={{padding: '40px', textAlign: 'center', color: 'var(--text-muted)'}}>Carregando sistema...</div>}>
@@ -160,20 +180,39 @@ function App() {
           {/* Rota Pública (Landing Page) */}
           <Route path="/eu-apoio" element={<EuApoio />} />
 
-          {/* Rota de Login */}
+          {/* Rota de Login Segura (Firebase) */}
           <Route path="/login" element={
             isAuthenticated ? <Navigate to="/" /> : (
               <div className="login-container">
-                <form className="login-box" onSubmit={handleLogin}>
+                <form className="login-box" onSubmit={handleAuth}>
                   <h1>HUDSON TESURA</h1>
-                  <p style={{marginBottom: '20px', color: 'var(--text-muted)'}}>CRM de Campanha - Acesso Restrito</p>
+                  <p style={{marginBottom: '20px', color: 'var(--text-muted)'}}>CRM de Campanha - Firebase Auth</p>
+                  
+                  <input 
+                    type="email" 
+                    placeholder="Seu E-mail" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    style={{marginBottom: '10px'}}
+                  />
                   <input 
                     type="password" 
-                    placeholder="Digite a senha de acesso" 
+                    placeholder="Sua Senha" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
-                  <button type="submit" className="primary">Entrar</button>
+                  <button type="submit" className="primary" style={{marginTop: '10px'}}>
+                    {isRegistering ? 'Criar Conta' : 'Entrar no CRM'}
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    onClick={() => setIsRegistering(!isRegistering)} 
+                    style={{marginTop: '15px', background: 'none', color: 'var(--text-muted)', border: 'none', fontSize: '14px', textDecoration: 'underline', cursor: 'pointer'}}>
+                    {isRegistering ? 'Já tenho uma conta. Fazer Login.' : 'Não tem conta? Criar Conta (Admin)'}
+                  </button>
                 </form>
               </div>
             )
@@ -181,7 +220,7 @@ function App() {
 
           {/* Rotas Privadas (CRM) */}
           <Route path="*" element={
-            <PrivateRoute>
+            <PrivateRoute isAuthenticated={isAuthenticated}>
               <InternalLayout />
             </PrivateRoute>
           } />

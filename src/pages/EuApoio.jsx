@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function EuApoio() {
   const [nome, setNome] = useState('');
@@ -10,9 +12,6 @@ export default function EuApoio() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const canvasRef = useRef(null);
-
-  // URL da nossa API no Google Sheets
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec";
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -57,21 +56,13 @@ export default function EuApoio() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const payload = {
-      sheet: "Apoiadores",
-      id: Date.now().toString(),
-      nome,
-      telefone,
-      cidade,
-      lideranca: "Formulário Eu Apoio (Orgânico)"
-    };
-
     try {
-      await fetch(GOOGLE_API_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+      await addDoc(collection(db, 'apoiadores'), {
+        nome,
+        telefone,
+        cidade,
+        lideranca: "Formulário Eu Apoio (Orgânico)",
+        timestamp: serverTimestamp()
       });
       setSuccess(true);
     } catch (error) {
