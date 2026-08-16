@@ -6,9 +6,24 @@ export default function Apoiadores() {
   const [telefone, setTelefone] = useState('');
   const [cidade, setCidade] = useState('');
 
+  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec";
+
   useEffect(() => {
-    const data = localStorage.getItem('crm_apoiadores');
-    if (data) setApoiadores(JSON.parse(data));
+    // Busca do banco central no Google Drive
+    fetch(GOOGLE_API_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          // Reverte para mostrar os mais recentes primeiro
+          setApoiadores(data.reverse());
+        }
+      })
+      .catch(err => {
+        console.error("Erro ao sincronizar com Google Drive:", err);
+        // Fallback para localStorage
+        const localData = localStorage.getItem('crm_apoiadores');
+        if (localData) setApoiadores(JSON.parse(localData));
+      });
   }, []);
 
   const salvar = async (e) => {
@@ -22,7 +37,7 @@ export default function Apoiadores() {
 
     // Integração silenciosa com Google Drive
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec', {
+      await fetch(GOOGLE_API_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: {

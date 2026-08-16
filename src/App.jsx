@@ -17,6 +17,13 @@ const Agenda = lazy(() => import('./pages/Agenda'));
 const GabineteDigital = lazy(() => import('./pages/GabineteDigital'));
 const Juridico = lazy(() => import('./pages/Juridico'));
 const PromptsIA = lazy(() => import('./pages/PromptsIA'));
+const EuApoio = lazy(() => import('./pages/EuApoio'));
+
+// Componente para rotas protegidas
+const PrivateRoute = ({ children }) => {
+  const auth = localStorage.getItem('crm_auth');
+  return auth === 'true' ? children : <Navigate to="/login" />;
+};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -44,30 +51,11 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="login-container">
-        <form className="login-box" onSubmit={handleLogin}>
-          <h1>HUDSON TESURA</h1>
-          <p style={{marginBottom: '20px', color: 'var(--text-muted)'}}>CRM de Campanha - Acesso Restrito</p>
-          <input 
-            type="password" 
-            placeholder="Digite a senha de acesso" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="submit" className="primary">Entrar</button>
-        </form>
-      </div>
-    );
-  }
-
-  return (
-    <BrowserRouter>
-      <div className="app-container">
-        
-        {/* Topbar Mobile */}
-        <div className="mobile-topbar">
+  // Layout Interno do CRM (só renderiza se logado via PrivateRoute)
+  const InternalLayout = () => (
+    <div className="app-container">
+      {/* Topbar Mobile */}
+      <div className="mobile-topbar">
           <h1>33753 HUDSON</h1>
           <button className="menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
             <Menu size={28} />
@@ -155,7 +143,43 @@ function App() {
             </Suspense>
           </main>
         </div>
-      </div>
+    </div>
+  );
+
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div style={{padding: '40px', textAlign: 'center', color: 'var(--text-muted)'}}>Carregando sistema...</div>}>
+        <Routes>
+          {/* Rota Pública (Landing Page) */}
+          <Route path="/eu-apoio" element={<EuApoio />} />
+
+          {/* Rota de Login */}
+          <Route path="/login" element={
+            isAuthenticated ? <Navigate to="/" /> : (
+              <div className="login-container">
+                <form className="login-box" onSubmit={handleLogin}>
+                  <h1>HUDSON TESURA</h1>
+                  <p style={{marginBottom: '20px', color: 'var(--text-muted)'}}>CRM de Campanha - Acesso Restrito</p>
+                  <input 
+                    type="password" 
+                    placeholder="Digite a senha de acesso" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button type="submit" className="primary">Entrar</button>
+                </form>
+              </div>
+            )
+          } />
+
+          {/* Rotas Privadas (CRM) */}
+          <Route path="*" element={
+            <PrivateRoute>
+              <InternalLayout />
+            </PrivateRoute>
+          } />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
