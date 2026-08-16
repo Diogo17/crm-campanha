@@ -16,6 +16,7 @@ const MapaVotos = lazy(() => import('./pages/MapaVotos'));
 const Agenda = lazy(() => import('./pages/Agenda'));
 const GabineteDigital = lazy(() => import('./pages/GabineteDigital'));
 const Juridico = lazy(() => import('./pages/Juridico'));
+const PromptsIA = lazy(() => import('./pages/PromptsIA'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -97,6 +98,9 @@ function App() {
             <NavLink to="/dossie" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <BookOpen size={20} /> Dossiê e Identidade
             </NavLink>
+            <NavLink to="/prompts" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <FolderGit2 size={20} /> Máquina de Prompts (IA)
+            </NavLink>
             <NavLink to="/conteudo" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Legendas Prontas
             </NavLink>
@@ -137,6 +141,7 @@ function App() {
                 <Route path="/apoiadores" element={<Apoiadores />} />
                 <Route path="/financeiro" element={<Financeiro />} />
                 <Route path="/dossie" element={<Dossie />} />
+                <Route path="/prompts" element={<PromptsIA />} />
                 <Route path="/conteudo" element={<Conteudo />} />
                 <Route path="/pipeline" element={<Pipeline />} />
                 <Route path="/calendario" element={<Calendario />} />
