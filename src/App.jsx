@@ -12,6 +12,10 @@ import Drive from './pages/Drive';
 import Dossie from './pages/Dossie';
 import Calendario from './pages/Calendario';
 import Pipeline from './pages/Pipeline';
+import MapaVotos from './pages/MapaVotos';
+import Agenda from './pages/Agenda';
+import GabineteDigital from './pages/GabineteDigital';
+import Juridico from './pages/Juridico';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
