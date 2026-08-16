@@ -29,8 +29,6 @@ export default function EuApoio() {
       
       const userImg = new Image();
       userImg.onload = () => {
-        // Define canvas size to match frame (e.g. 1080x1920 for stories or square 1080x1080)
-        // Adjusting to 1080x1920 to fit standard frame sizes
         canvas.width = 1080;
         canvas.height = 1920;
 
@@ -46,7 +44,7 @@ export default function EuApoio() {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           setMergedImage(canvas.toDataURL('image/jpeg', 0.9));
         };
-        frameImg.src = '/moldura-apoio.png'; // A imagem que copiamos para a pasta public
+        frameImg.src = '/moldura-apoio.png'; 
       };
       userImg.src = imageSrc;
     }
@@ -74,65 +72,118 @@ export default function EuApoio() {
   };
 
   const shareWhatsApp = () => {
-    const text = encodeURIComponent(`Eu apoio Hudson Tesura para Deputado Estadual! 33753 ✅\n\nVenha fazer parte da Força do Norte também! Acesse, monte sua foto com a nossa moldura e confirme seu apoio:\n👉 ${window.location.href}`);
+    const text = encodeURIComponent(`Eu apoio Hudson Tesura para Deputado Estadual! 33753 ✅\n\nVenha fazer parte da Força do Norte também! Acesse, monte sua foto com a nossa moldura oficial:\n👉 ${window.location.href}`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
   if (success) {
     return (
-      <div style={{minHeight: '100vh', backgroundColor: '#111', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', textAlign: 'center'}}>
-        <h1 style={{color: 'var(--primary)', fontSize: '32px', marginBottom: '15px'}}>Apoio Confirmado! ✅</h1>
+      <div style={{minHeight: '100vh', backgroundColor: '#050505', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', textAlign: 'center'}}>
+        <h1 style={{color: '#c1121f', fontSize: '32px', marginBottom: '15px'}}>Apoio Confirmado! ✅</h1>
         <p style={{fontSize: '18px', color: '#ccc', marginBottom: '30px'}}>Bem-vindo à Força do Norte, {nome.split(' ')[0]}!</p>
         
         {mergedImage && (
-          <div style={{marginBottom: '30px', maxWidth: '300px'}}>
-            <p style={{marginBottom: '10px', fontSize: '14px', color: 'var(--success)'}}>Sua foto oficial ficou pronta:</p>
-            <img src={mergedImage} alt="Foto de Apoio" style={{width: '100%', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.5)'}} />
-            <a href={mergedImage} download={`Apoio_Tesura_${nome}.jpg`} style={{display: 'block', marginTop: '15px', color: '#fff', backgroundColor: '#333', padding: '10px', borderRadius: '5px', textDecoration: 'none'}}>
-              📥 Baixar Foto
+          <div style={{marginBottom: '30px', maxWidth: '300px', width: '100%'}}>
+            <p style={{marginBottom: '15px', fontSize: '15px', color: '#10B981'}}>Sua foto oficial ficou pronta:</p>
+            <img src={mergedImage} alt="Foto de Apoio" style={{width: '100%', borderRadius: '15px', border: '2px solid #333', boxShadow: '0 10px 25px rgba(193, 18, 31, 0.2)'}} />
+            <a href={mergedImage} download={`Apoio_Tesura_${nome}.jpg`} style={{display: 'block', marginTop: '15px', color: '#fff', backgroundColor: '#333', padding: '15px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold'}}>
+              📥 Baixar Minha Foto
             </a>
           </div>
         )}
 
-        <button onClick={shareWhatsApp} style={{backgroundColor: '#25D366', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '30px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', width: '100%', maxWidth: '300px', justifyContent: 'center'}}>
-          Convidar no WhatsApp
+        <button onClick={shareWhatsApp} style={{backgroundColor: '#25D366', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '8px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', width: '100%', maxWidth: '300px', justifyContent: 'center'}}>
+          Convidar Amigos
         </button>
       </div>
     );
   }
 
   return (
-    <div style={{minHeight: '100vh', backgroundColor: '#1A1A1A', color: '#fff', padding: '20px', fontFamily: 'Arial, sans-serif'}}>
-      <div style={{maxWidth: '500px', margin: '0 auto'}}>
+    <div style={{minHeight: '100vh', backgroundColor: '#050505', color: '#fff', padding: '0', fontFamily: 'Arial, sans-serif'}}>
+      
+      {/* Banner Oficial do Candidato */}
+      <div style={{width: '100%', backgroundColor: '#c1121f', position: 'relative'}}>
+        <img 
+          src="/foto-convite.png" 
+          alt="Hudson Tesura" 
+          style={{width: '100%', maxHeight: '400px', objectFit: 'cover', display: 'block'}} 
+        />
+        <div style={{position: 'absolute', bottom: '0', left: '0', width: '100%', height: '50%', background: 'linear-gradient(to top, #050505 0%, transparent 100%)'}}></div>
+      </div>
+
+      <div style={{maxWidth: '500px', margin: '-40px auto 0', padding: '20px', position: 'relative', zIndex: 10}}>
         
         <div style={{textAlign: 'center', marginBottom: '30px'}}>
-          <h1 style={{fontSize: '36px', color: 'var(--primary)', margin: '0', fontWeight: '900'}}>33753</h1>
-          <h2 style={{fontSize: '24px', margin: '5px 0 15px'}}>HUDSON TESURA</h2>
-          <p style={{color: '#999'}}>Gere sua foto oficial da campanha e declare seu apoio pelo Norte de Minas.</p>
+          <h2 style={{fontSize: '28px', margin: '0', fontWeight: '900', color: '#fff'}}>VENHA PARA A FORÇA DO NORTE</h2>
+          <p style={{color: '#aaa', fontSize: '15px', marginTop: '10px'}}>Gere sua foto oficial da campanha e declare seu apoio.</p>
         </div>
 
-        <div style={{backgroundColor: '#2A2A2A', padding: '20px', borderRadius: '10px', marginBottom: '20px'}}>
-          <h3 style={{marginBottom: '15px', color: 'var(--primary)'}}>1. Escolha sua melhor foto</h3>
+        <div style={{backgroundColor: '#111', padding: '25px', borderRadius: '12px', marginBottom: '20px', border: '1px solid #222'}}>
+          <h3 style={{marginBottom: '15px', color: '#c1121f', fontSize: '18px'}}>1. Escolha sua melhor foto</h3>
+          <p style={{color: '#777', fontSize: '13px', marginBottom: '15px'}}>Selecione uma foto do seu rosto para encaixar na moldura.</p>
           <input 
             type="file" 
             accept="image/*" 
             onChange={handleImageUpload} 
-            style={{width: '100%', padding: '10px', backgroundColor: '#111', borderRadius: '5px', color: '#fff', border: '1px solid #444'}}
+            style={{width: '100%', padding: '12px', backgroundColor: '#000', borderRadius: '8px', color: '#fff', border: '1px solid #333'}}
           />
-          {imageSrc && <p style={{fontSize: '12px', color: '#10B981', marginTop: '10px'}}>✅ Foto carregada com sucesso!</p>}
+          {imageSrc && <p style={{fontSize: '13px', color: '#10B981', marginTop: '10px', fontWeight: 'bold'}}>✅ Foto carregada!</p>}
         </div>
 
-        <div style={{backgroundColor: '#2A2A2A', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
-          <h3 style={{marginBottom: '15px', color: 'var(--primary)'}}>2. Confirme seu apoio</h3>
+        <div style={{backgroundColor: '#111', padding: '25px', borderRadius: '12px', marginBottom: '30px', border: '1px solid #222'}}>
+          <h3 style={{marginBottom: '20px', color: '#c1121f', fontSize: '18px'}}>2. Preencha seus dados</h3>
           <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
-            <input required type="text" placeholder="Seu nome completo" value={nome} onChange={e => setNome(e.target.value)} style={{padding: '12px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#111', color: '#fff', width: '100%'}} />
-            <input required type="text" placeholder="Sua Cidade" value={cidade} onChange={e => setCidade(e.target.value)} style={{padding: '12px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#111', color: '#fff', width: '100%'}} />
-            <input required type="text" placeholder="Seu WhatsApp (com DDD)" value={telefone} onChange={e => setTelefone(e.target.value)} style={{padding: '12px', borderRadius: '5px', border: '1px solid #444', backgroundColor: '#111', color: '#fff', width: '100%'}} />
+            <input 
+              required 
+              type="text" 
+              placeholder="Seu nome completo" 
+              value={nome} 
+              onChange={e => setNome(e.target.value)} 
+              style={{padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#000', color: '#fff', width: '100%', outline: 'none'}} 
+              onFocus={e => e.target.style.borderColor = '#c1121f'}
+              onBlur={e => e.target.style.borderColor = '#333'}
+            />
+            <input 
+              required 
+              type="text" 
+              placeholder="Sua Cidade" 
+              value={cidade} 
+              onChange={e => setCidade(e.target.value)} 
+              style={{padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#000', color: '#fff', width: '100%', outline: 'none'}} 
+              onFocus={e => e.target.style.borderColor = '#c1121f'}
+              onBlur={e => e.target.style.borderColor = '#333'}
+            />
+            <input 
+              required 
+              type="text" 
+              placeholder="Seu WhatsApp (com DDD)" 
+              value={telefone} 
+              onChange={e => setTelefone(e.target.value)} 
+              style={{padding: '15px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#000', color: '#fff', width: '100%', outline: 'none'}} 
+              onFocus={e => e.target.style.borderColor = '#c1121f'}
+              onBlur={e => e.target.style.borderColor = '#333'}
+            />
             
-            <button type="submit" disabled={isSubmitting || !imageSrc} style={{padding: '15px', backgroundColor: (isSubmitting || !imageSrc) ? '#555' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '5px', fontSize: '18px', fontWeight: 'bold', cursor: (isSubmitting || !imageSrc) ? 'not-allowed' : 'pointer', marginTop: '10px'}}>
-              {isSubmitting ? 'Registrando...' : 'GERAR FOTO E CONFIRMAR APOIO'}
+            <button 
+              type="submit" 
+              disabled={isSubmitting || !imageSrc} 
+              style={{
+                padding: '18px', 
+                backgroundColor: (isSubmitting || !imageSrc) ? '#333' : '#c1121f', 
+                color: (isSubmitting || !imageSrc) ? '#666' : '#fff', 
+                border: 'none', 
+                borderRadius: '8px', 
+                fontSize: '18px', 
+                fontWeight: '900', 
+                cursor: (isSubmitting || !imageSrc) ? 'not-allowed' : 'pointer', 
+                marginTop: '15px',
+                textTransform: 'uppercase',
+                boxShadow: (isSubmitting || !imageSrc) ? 'none' : '0 4px 15px rgba(193, 18, 31, 0.4)'
+              }}>
+              {isSubmitting ? 'Aguarde...' : 'CONFIRMAR APOIO E GERAR FOTO'}
             </button>
-            {!imageSrc && <p style={{fontSize: '12px', color: '#ff4444', textAlign: 'center'}}>Você precisa enviar uma foto antes de confirmar.</p>}
+            {!imageSrc && <p style={{fontSize: '13px', color: '#ff4444', textAlign: 'center', marginTop: '10px'}}>Por favor, envie uma foto primeiro.</p>}
           </form>
         </div>
 
@@ -140,7 +191,6 @@ export default function EuApoio() {
 
       {/* Canvas Oculto para renderização */}
       <canvas ref={canvasRef} style={{display: 'none'}}></canvas>
-
     </div>
   );
 }
