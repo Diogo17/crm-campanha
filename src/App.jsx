@@ -114,8 +114,15 @@ function App() {
               <FolderGit2 size={20} /> Artes & Drive
             </NavLink>
           </nav>
-          <div style={{padding: '20px'}}>
-            <button onClick={handleLogout} style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
+          
+          <div style={{padding: '10px 20px'}}>
+            <a href="/eu-apoio" target="_blank" rel="noreferrer" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', backgroundColor: '#25D366', color: 'white', padding: '10px', borderRadius: '5px', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px', textAlign: 'center'}}>
+              <Smartphone size={16} /> Link /eu-apoio
+            </a>
+          </div>
+
+          <div style={{padding: '10px 20px 20px'}}>
+            <button onClick={handleLogout} style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', backgroundColor: '#333'}}>
               <LogOut size={16} /> Sair
             </button>
           </div>
