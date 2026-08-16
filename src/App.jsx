@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video, MapPin, Map, Scale, Smartphone, Menu } from 'lucide-react';
 import './index.css';
 
-// Componentes (Serão importados de arquivos separados)
-import Dashboard from './pages/Dashboard';
-import Apoiadores from './pages/Apoiadores';
-import Financeiro from './pages/Financeiro';
-import Conteudo from './pages/Conteudo';
-import Drive from './pages/Drive';
-import Dossie from './pages/Dossie';
-import Calendario from './pages/Calendario';
-import Pipeline from './pages/Pipeline';
-import MapaVotos from './pages/MapaVotos';
-import Agenda from './pages/Agenda';
-import GabineteDigital from './pages/GabineteDigital';
-import Juridico from './pages/Juridico';
+// Componentes (Carregamento Preguiçoso / Lazy Loading para economizar memória)
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Apoiadores = lazy(() => import('./pages/Apoiadores'));
+const Financeiro = lazy(() => import('./pages/Financeiro'));
+const Conteudo = lazy(() => import('./pages/Conteudo'));
+const Drive = lazy(() => import('./pages/Drive'));
+const Dossie = lazy(() => import('./pages/Dossie'));
+const Calendario = lazy(() => import('./pages/Calendario'));
+const Pipeline = lazy(() => import('./pages/Pipeline'));
+const MapaVotos = lazy(() => import('./pages/MapaVotos'));
+const Agenda = lazy(() => import('./pages/Agenda'));
+const GabineteDigital = lazy(() => import('./pages/GabineteDigital'));
+const Juridico = lazy(() => import('./pages/Juridico'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -131,21 +131,23 @@ function App() {
 
         <div className="main-wrapper">
           <main className="main-content">
-            <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/apoiadores" element={<Apoiadores />} />
-            <Route path="/financeiro" element={<Financeiro />} />
-            <Route path="/dossie" element={<Dossie />} />
-            <Route path="/conteudo" element={<Conteudo />} />
-            <Route path="/pipeline" element={<Pipeline />} />
-            <Route path="/calendario" element={<Calendario />} />
-            <Route path="/mapa" element={<MapaVotos />} />
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/gabinete" element={<GabineteDigital />} />
-            <Route path="/juridico" element={<Juridico />} />
-            <Route path="/drive" element={<Drive />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+            <Suspense fallback={<div style={{padding: '40px', textAlign: 'center', color: 'var(--text-muted)'}}>Carregando módulo...</div>}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/apoiadores" element={<Apoiadores />} />
+                <Route path="/financeiro" element={<Financeiro />} />
+                <Route path="/dossie" element={<Dossie />} />
+                <Route path="/conteudo" element={<Conteudo />} />
+                <Route path="/pipeline" element={<Pipeline />} />
+                <Route path="/calendario" element={<Calendario />} />
+                <Route path="/mapa" element={<MapaVotos />} />
+                <Route path="/agenda" element={<Agenda />} />
+                <Route path="/gabinete" element={<GabineteDigital />} />
+                <Route path="/juridico" element={<Juridico />} />
+                <Route path="/drive" element={<Drive />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       </div>
