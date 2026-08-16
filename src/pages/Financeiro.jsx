@@ -13,13 +13,34 @@ export default function Financeiro() {
     if (data) setTransacoes(JSON.parse(data));
   }, []);
 
-  const salvar = (e) => {
+  const salvar = async (e) => {
     e.preventDefault();
     const nova = { id: Date.now(), descricao, valor: parseFloat(valor), tipo };
     const novaLista = [...transacoes, nova];
     setTransacoes(novaLista);
     localStorage.setItem('crm_financeiro', JSON.stringify(novaLista));
+    
     setDescricao(''); setValor('');
+
+    // Integração silenciosa com Google Drive
+    try {
+      await fetch('https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sheet: "Financeiro",
+          id: nova.id,
+          descricao: nova.descricao,
+          tipo: nova.tipo,
+          valor: nova.valor
+        })
+      });
+    } catch (err) {
+      console.error("Erro ao salvar no Drive:", err);
+    }
   };
 
   const deletar = (id) => {

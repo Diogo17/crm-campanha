@@ -11,13 +11,35 @@ export default function Apoiadores() {
     if (data) setApoiadores(JSON.parse(data));
   }, []);
 
-  const salvar = (e) => {
+  const salvar = async (e) => {
     e.preventDefault();
-    const novo = { id: Date.now(), nome, telefone, cidade };
+    const novo = { id: Date.now(), nome, telefone, cidade, lideranca: 'N/A' };
     const novaLista = [...apoiadores, novo];
     setApoiadores(novaLista);
     localStorage.setItem('crm_apoiadores', JSON.stringify(novaLista));
+    
     setNome(''); setTelefone(''); setCidade('');
+
+    // Integração silenciosa com Google Drive
+    try {
+      await fetch('https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sheet: "Apoiadores",
+          id: novo.id,
+          nome: novo.nome,
+          telefone: novo.telefone,
+          cidade: novo.cidade,
+          lideranca: novo.lideranca
+        })
+      });
+    } catch (err) {
+      console.error("Erro ao salvar no Drive:", err);
+    }
   };
 
   const deletar = (id) => {
