@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default function Financeiro() {
   const [transacoes, setTransacoes] = useState([]);
@@ -30,10 +32,52 @@ export default function Financeiro() {
   const totalDespesas = transacoes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0);
   const saldo = totalReceitas - totalDespesas;
 
+  const gerarPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text("Prestação de Contas - Eleições 2026", 14, 22);
+    
+    doc.setFontSize(12);
+    doc.text("Candidato: HUDSON TESURA", 14, 30);
+    doc.text("Número: 33753 | CNPJ: 68.608.100/0001-39", 14, 36);
+    
+    doc.text(`Total Arrecadado: R$ ${totalReceitas.toFixed(2)}`, 14, 46);
+    doc.text(`Total Gasto: R$ ${totalDespesas.toFixed(2)}`, 14, 52);
+    doc.text(`Saldo em Caixa: R$ ${saldo.toFixed(2)}`, 14, 58);
+    
+    const tableColumn = ["Descrição", "Tipo", "Valor (R$)"];
+    const tableRows = [];
+    
+    transacoes.forEach(t => {
+      tableRows.push([
+        t.descricao,
+        t.tipo.toUpperCase(),
+        `R$ ${t.valor.toFixed(2)}`
+      ]);
+    });
+    
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 65,
+    });
+    
+    const finalY = doc.lastAutoTable.finalY || 65;
+    doc.line(14, finalY + 30, 100, finalY + 30);
+    doc.text("Assinatura do Candidato (Gov.br)", 14, finalY + 36);
+    doc.text("HUDSON TEIXEIRA PASSOS", 14, finalY + 42);
+    
+    doc.save("Prestacao_Contas_Tesura_33753.pdf");
+  };
+
   return (
     <div>
-      <div className="header">
+      <div className="header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <h2>Controle Financeiro</h2>
+        <button onClick={gerarPDF} style={{backgroundColor: '#10B981', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}>
+          Exportar Prestação (PDF)
+        </button>
       </div>
 
       <div className="card-grid" style={{marginBottom: '20px'}}>

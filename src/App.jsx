@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video } from 'lucide-react';
+import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video, MapPin, Map, Scale, Smartphone } from 'lucide-react';
 import './index.css';
 
 // Componentes (Serão importados de arquivos separados)
@@ -86,6 +86,18 @@ function App() {
             <NavLink to="/calendario" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <CalendarDays size={20} /> Calendário 60 Dias
             </NavLink>
+            <NavLink to="/mapa" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <Map size={20} /> Mapa de Votos
+            </NavLink>
+            <NavLink to="/agenda" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <MapPin size={20} /> Agenda de Rua
+            </NavLink>
+            <NavLink to="/gabinete" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <Smartphone size={20} /> Gabinete Digital
+            </NavLink>
+            <NavLink to="/juridico" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <Scale size={20} /> Jurídico (TSE)
+            </NavLink>
             <NavLink to="/drive" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Artes & Drive
             </NavLink>
@@ -106,6 +118,10 @@ function App() {
             <Route path="/conteudo" element={<Conteudo />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/calendario" element={<Calendario />} />
+            <Route path="/mapa" element={<MapaVotos />} />
+            <Route path="/agenda" element={<Agenda />} />
+            <Route path="/gabinete" element={<GabineteDigital />} />
+            <Route path="/juridico" element={<Juridico />} />
             <Route path="/drive" element={<Drive />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
