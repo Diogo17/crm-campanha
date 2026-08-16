@@ -24,7 +24,7 @@ export default function Financeiro() {
 
     // Integração silenciosa com Google Drive
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbyqeJXlHxX-Juqay4J9JS_KmiMjGfRY1EiXruAu1JSwOizPLF7notxSL-tz9O8b02vAug/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: {

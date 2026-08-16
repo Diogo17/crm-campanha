@@ -15,7 +15,7 @@ export default function MapaVotos() {
     "Juvenília": 1500
   };
 
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbyqeJXlHxX-Juqay4J9JS_KmiMjGfRY1EiXruAu1JSwOizPLF7notxSL-tz9O8b02vAug/exec";
+  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxbz7qEf4yObmPhuO5WdU-KK4FoAxMAFmdYZHu70i9dakRVScVXMTFU65FT7ogYbzCN1w/exec";
 
   useEffect(() => {
     fetch(GOOGLE_API_URL)
