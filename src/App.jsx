@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Apoiadores from './pages/Apoiadores';
 import Financeiro from './pages/Financeiro';
 import Drive from './pages/Drive';
+import Conteudo from './pages/Conteudo';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -70,6 +71,9 @@ function App() {
             <NavLink to="/financeiro" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <DollarSign size={20} /> Financeiro
             </NavLink>
+            <NavLink to="/conteudo" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <FolderGit2 size={20} /> Legendas e Dossiê
+            </NavLink>
             <NavLink to="/drive" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Artes & Drive
             </NavLink>
@@ -86,6 +90,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/apoiadores" element={<Apoiadores />} />
             <Route path="/financeiro" element={<Financeiro />} />
+            <Route path="/conteudo" element={<Conteudo />} />
             <Route path="/drive" element={<Drive />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

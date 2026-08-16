@@ -36,6 +36,19 @@ export default function Financeiro() {
         <h2>Controle Financeiro</h2>
       </div>
 
+      <div className="card-grid" style={{marginBottom: '20px'}}>
+        <div className="card">
+          <h3>Teto Legal (TSE)</h3>
+          <div className="value" style={{color: 'var(--text-muted)'}}>R$ 1.270.629,01</div>
+          <p style={{color: 'var(--text-muted)', fontSize: '12px', marginTop: '5px'}}>Limite máximo de gastos</p>
+        </div>
+        <div className="card">
+          <h3>Orçamento Alvo (Cenário 2)</h3>
+          <div className="value" style={{color: '#3B82F6'}}>R$ 125.565,00</div>
+          <p style={{color: 'var(--text-muted)', fontSize: '12px', marginTop: '5px'}}>Meta de arrecadação da campanha</p>
+        </div>
+      </div>
+
       <div className="card-grid">
         <div className="card">
           <h3>Total Arrecadado (Receitas)</h3>
@@ -46,7 +59,7 @@ export default function Financeiro() {
           <div className="value" style={{color: 'var(--primary)'}}>R$ {totalDespesas.toFixed(2)}</div>
         </div>
         <div className="card">
-          <h3>Saldo Atual</h3>
+          <h3>Saldo em Caixa</h3>
           <div className="value">R$ {saldo.toFixed(2)}</div>
         </div>
       </div>
