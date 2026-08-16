@@ -6,7 +6,7 @@ export default function Apoiadores() {
   const [telefone, setTelefone] = useState('');
   const [cidade, setCidade] = useState('');
 
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec";
+  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbyqeJXlHxX-Juqay4J9JS_KmiMjGfRY1EiXruAu1JSwOizPLF7notxSL-tz9O8b02vAug/exec";
 
   useEffect(() => {
     // Busca do banco central no Google Drive

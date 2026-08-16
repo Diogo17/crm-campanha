@@ -12,7 +12,7 @@ export default function EuApoio() {
   const canvasRef = useRef(null);
 
   // URL da nossa API no Google Sheets
-  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbz9ohASvWnTahf8muhtNSXQXiWiKpUXhJw9OLwFOEZuEP74djxFpdaagEqc8TgQ54Z-TQ/exec";
+  const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbyqeJXlHxX-Juqay4J9JS_KmiMjGfRY1EiXruAu1JSwOizPLF7notxSL-tz9O8b02vAug/exec";
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
