@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video } from 'lucide-react';
 import './index.css';
 
 // Componentes (Serão importados de arquivos separados)
 import Dashboard from './pages/Dashboard';
 import Apoiadores from './pages/Apoiadores';
 import Financeiro from './pages/Financeiro';
-import Drive from './pages/Drive';
 import Conteudo from './pages/Conteudo';
+import Drive from './pages/Drive';
+import Dossie from './pages/Dossie';
+import Calendario from './pages/Calendario';
+import Pipeline from './pages/Pipeline';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -71,8 +74,17 @@ function App() {
             <NavLink to="/financeiro" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <DollarSign size={20} /> Financeiro
             </NavLink>
+            <NavLink to="/dossie" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <BookOpen size={20} /> Dossiê e Identidade
+            </NavLink>
             <NavLink to="/conteudo" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-              <FolderGit2 size={20} /> Legendas e Dossiê
+              <FolderGit2 size={20} /> Legendas Prontas
+            </NavLink>
+            <NavLink to="/pipeline" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <Video size={20} /> Pipeline de Vídeo
+            </NavLink>
+            <NavLink to="/calendario" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+              <CalendarDays size={20} /> Calendário 60 Dias
             </NavLink>
             <NavLink to="/drive" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Artes & Drive
@@ -90,7 +102,10 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/apoiadores" element={<Apoiadores />} />
             <Route path="/financeiro" element={<Financeiro />} />
+            <Route path="/dossie" element={<Dossie />} />
             <Route path="/conteudo" element={<Conteudo />} />
+            <Route path="/pipeline" element={<Pipeline />} />
+            <Route path="/calendario" element={<Calendario />} />
             <Route path="/drive" element={<Drive />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
