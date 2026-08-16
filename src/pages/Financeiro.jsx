@@ -147,30 +147,32 @@ export default function Financeiro() {
         {transacoes.length === 0 ? (
           <p style={{color: 'var(--text-muted)', marginTop: '10px'}}>Nenhuma transação lançada ainda.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Descrição</th>
-                <th>Tipo</th>
-                <th>Valor</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transacoes.map(t => (
-                <tr key={t.id}>
-                  <td>{t.descricao}</td>
-                  <td style={{color: t.tipo === 'receita' ? 'var(--success)' : 'var(--primary)', fontWeight: 'bold', textTransform: 'capitalize'}}>{t.tipo}</td>
-                  <td>R$ {t.valor.toFixed(2)}</td>
-                  <td>
-                    <button onClick={() => deletar(t.id)} style={{background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '5px 10px'}}>
-                      Remover
-                    </button>
-                  </td>
+          <div className="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Ação</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {transacoes.map(t => (
+                  <tr key={t.id}>
+                    <td>{t.descricao}</td>
+                    <td style={{color: t.tipo === 'receita' ? 'var(--success)' : 'var(--primary)', fontWeight: 'bold', textTransform: 'capitalize'}}>{t.tipo}</td>
+                    <td>R$ {t.valor.toFixed(2)}</td>
+                    <td>
+                      <button onClick={() => deletar(t.id)} style={{background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '5px 10px'}}>
+                        Remover
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

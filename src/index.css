@@ -16,14 +16,20 @@ body { background-color: var(--bg-dark); color: var(--text-light); }
 .app-container { display: flex; min-height: 100vh; }
 
 /* Sidebar */
-.sidebar { width: 250px; background-color: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.sidebar { width: 250px; background-color: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
 .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); }
 .sidebar-header h1 { color: var(--primary); font-size: 24px; font-weight: 900; }
-.sidebar-nav { flex: 1; padding: 20px 0; }
+.sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
 .nav-item { padding: 15px 20px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); text-decoration: none; transition: 0.2s; }
 .nav-item:hover, .nav-item.active { background-color: rgba(198, 0, 0, 0.1); color: var(--primary); border-right: 3px solid var(--primary); }
 
+/* Topbar Mobile */
+.mobile-topbar { display: none; background-color: var(--bg-panel); border-bottom: 1px solid var(--border); padding: 15px 20px; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 900; }
+.mobile-topbar h1 { color: var(--primary); font-size: 20px; font-weight: 900; }
+.menu-btn { background: none; border: none; color: var(--text-light); padding: 0; display: flex; align-items: center; }
+
 /* Main Content */
+.main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; }
 .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .header h2 { font-size: 28px; font-weight: 700; }
@@ -39,13 +45,36 @@ input, select, button { padding: 10px; border-radius: 6px; border: 1px solid var
 button.primary { background-color: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
 button.primary:hover { background-color: var(--primary-hover); }
 
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 600px; }
+.table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); white-space: nowrap; }
 th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
 
 /* Login Screen */
-.login-container { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: var(--bg-dark); }
-.login-box { background-color: var(--bg-panel); padding: 40px; border-radius: 8px; border: 1px solid var(--primary); text-align: center; width: 400px; }
+.login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: var(--bg-dark); padding: 20px; }
+.login-box { background-color: var(--bg-panel); padding: 40px; border-radius: 8px; border: 1px solid var(--primary); text-align: center; width: 100%; max-width: 400px; }
 .login-box h1 { color: var(--primary); margin-bottom: 20px; font-weight: 900; }
 .login-box input { width: 100%; margin-bottom: 20px; padding: 15px; }
 .login-box button { width: 100%; padding: 15px; font-size: 16px; }
+
+/* Overlay Mobile */
+.mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  .app-container { flex-direction: column; }
+  .mobile-topbar { display: flex; }
+  
+  .sidebar { position: fixed; top: 0; bottom: 0; left: 0; transform: translateX(-100%); width: 280px; box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
+  .sidebar.open { transform: translateX(0); }
+  .mobile-overlay.open { display: block; }
+  
+  .main-content { padding: 15px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 20px; }
+  .header button { width: 100%; }
+  
+  .card-grid { grid-template-columns: 1fr; }
+  
+  form { flex-direction: column; }
+  form input, form select, form button { width: 100% !important; flex: none !important; }
+}

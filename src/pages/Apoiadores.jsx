@@ -69,30 +69,32 @@ export default function Apoiadores() {
         {apoiadores.length === 0 ? (
           <p style={{color: 'var(--text-muted)', marginTop: '10px'}}>Nenhum apoiador cadastrado ainda.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>Cidade</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {apoiadores.map(a => (
-                <tr key={a.id}>
-                  <td>{a.nome}</td>
-                  <td>{a.telefone}</td>
-                  <td>{a.cidade}</td>
-                  <td>
-                    <button onClick={() => deletar(a.id)} style={{background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '5px 10px'}}>
-                      Remover
-                    </button>
-                  </td>
+          <div className="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Telefone</th>
+                  <th>Cidade</th>
+                  <th>Ação</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {apoiadores.map(a => (
+                  <tr key={a.id}>
+                    <td>{a.nome}</td>
+                    <td>{a.telefone}</td>
+                    <td>{a.cidade}</td>
+                    <td>
+                      <button onClick={() => deletar(a.id)} style={{background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '5px 10px'}}>
+                        Remover
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

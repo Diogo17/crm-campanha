@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video, MapPin, Map, Scale, Smartphone } from 'lucide-react';
+import { LayoutDashboard, Users, DollarSign, FolderGit2, LogOut, CalendarDays, BookOpen, Video, MapPin, Map, Scale, Smartphone, Menu } from 'lucide-react';
 import './index.css';
 
 // Componentes (Serão importados de arquivos separados)
@@ -20,6 +20,7 @@ import Juridico from './pages/Juridico';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const auth = localStorage.getItem('crm_auth');
@@ -63,46 +64,61 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <aside className="sidebar">
+        
+        {/* Topbar Mobile */}
+        <div className="mobile-topbar">
+          <h1>33753 HUDSON</h1>
+          <button className="menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
+            <Menu size={28} />
+          </button>
+        </div>
+
+        {/* Overlay do Menu Mobile */}
+        <div 
+          className={`mobile-overlay ${isMobileMenuOpen ? 'open' : ''}`} 
+          onClick={() => setIsMobileMenuOpen(false)}
+        ></div>
+
+        <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
           <div className="sidebar-header">
             <h1>33753</h1>
             <p style={{fontSize: '12px', color: 'var(--text-muted)', marginTop: '5px'}}>CRM HUDSON TESURA</p>
           </div>
           <nav className="sidebar-nav">
-            <NavLink to="/" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <LayoutDashboard size={20} /> Visão Geral
             </NavLink>
-            <NavLink to="/apoiadores" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/apoiadores" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <Users size={20} /> Apoiadores
             </NavLink>
-            <NavLink to="/financeiro" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/financeiro" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <DollarSign size={20} /> Financeiro
             </NavLink>
-            <NavLink to="/dossie" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/dossie" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <BookOpen size={20} /> Dossiê e Identidade
             </NavLink>
-            <NavLink to="/conteudo" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/conteudo" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Legendas Prontas
             </NavLink>
-            <NavLink to="/pipeline" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/pipeline" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <Video size={20} /> Pipeline de Vídeo
             </NavLink>
-            <NavLink to="/calendario" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/calendario" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <CalendarDays size={20} /> Calendário 60 Dias
             </NavLink>
-            <NavLink to="/mapa" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/mapa" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <Map size={20} /> Mapa de Votos
             </NavLink>
-            <NavLink to="/agenda" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/agenda" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <MapPin size={20} /> Agenda de Rua
             </NavLink>
-            <NavLink to="/gabinete" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/gabinete" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <Smartphone size={20} /> Gabinete Digital
             </NavLink>
-            <NavLink to="/juridico" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/juridico" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <Scale size={20} /> Jurídico (TSE)
             </NavLink>
-            <NavLink to="/drive" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
+            <NavLink to="/drive" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
               <FolderGit2 size={20} /> Artes & Drive
             </NavLink>
           </nav>
@@ -113,8 +129,9 @@ function App() {
           </div>
         </aside>
 
-        <main className="main-content">
-          <Routes>
+        <div className="main-wrapper">
+          <main className="main-content">
+            <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/apoiadores" element={<Apoiadores />} />
             <Route path="/financeiro" element={<Financeiro />} />
@@ -129,7 +146,8 @@ function App() {
             <Route path="/drive" element={<Drive />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </main>
+          </main>
+        </div>
       </div>
     </BrowserRouter>
   );
