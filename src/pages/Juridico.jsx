@@ -39,39 +39,46 @@ export default function Juridico() {
 
         <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
           
-          <div style={{borderLeft: '4px solid #28b463', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: '#28b463', margin: '0 0 5px 0'}}>05 de Março a 03 de Abril</h4>
-            <p style={{color: 'var(--text-light)', fontSize: '15px', margin: '0'}}>Janela Partidária</p>
-            <p style={{color: 'var(--text-muted)', fontSize: '13px', margin: '5px 0 0 0'}}>Prazo final para confirmação de domicílio eleitoral e filiação (04 de Abril).</p>
+          <div style={{borderLeft: '4px solid #c1121f', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
+            <h4 style={{color: '#c1121f', margin: '0 0 5px 0'}}>Agosto: Fase de Preparação e Largada Oficial</h4>
+            
+            <ul style={{color: 'var(--text-muted)', fontSize: '14px', paddingLeft: '20px', lineHeight: '1.6'}}>
+              <li><strong style={{color: '#fff'}}>05 de Agosto:</strong> Prazo final absoluto para as convenções partidárias.</li>
+              <li><strong style={{color: '#fff'}}>15 de Agosto:</strong> Prazo final para registro de candidaturas e abertura de conta bancária de campanha.</li>
+              <li><strong style={{color: '#28b463'}}>16 de Agosto: INÍCIO OFICIAL DA PROPAGANDA ELEITORAL</strong>
+                <ul style={{marginTop: '5px', marginBottom: '5px'}}>
+                  <li style={{color: '#10B981'}}><strong>O QUE PODE A PARTIR DAQUI:</strong> Fazer lives de campanha, usar alto-falantes e amplificadores, realizar comícios, carreatas, caminhadas, distribuir material gráfico (santinhos), pagar propaganda em jornal e impulsionar conteúdos na internet de forma paga.</li>
+                  <li style={{color: '#EF4444'}}><strong>O QUE NÃO PODE A PARTIR DAQUI:</strong> Fazer e divulgar enquetes eleitorais (apenas pesquisas registradas são permitidas).</li>
+                </ul>
+              </li>
+              <li><strong style={{color: '#fff'}}>28 de Agosto:</strong> Início do horário eleitoral gratuito no rádio e na TV.</li>
+            </ul>
           </div>
 
           <div style={{borderLeft: '4px solid #d4ac0d', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: '#d4ac0d', margin: '0 0 5px 0'}}>15 de Maio</h4>
-            <p style={{color: 'var(--text-light)', fontSize: '15px', margin: '0'}}>Arrecadação Prévia (Vaquinha)</p>
-            <p style={{color: 'var(--text-muted)', fontSize: '13px', margin: '5px 0 0 0'}}>Início da arrecadação de recursos por financiamento coletivo.</p>
-          </div>
-
-          <div style={{borderLeft: '4px solid #2e86c1', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: '#2e86c1', margin: '0 0 5px 0'}}>20 de Julho a 05 de Agosto</h4>
-            <p style={{color: 'var(--text-light)', fontSize: '15px', margin: '0'}}>Convenções Partidárias</p>
-            <p style={{color: 'var(--text-muted)', fontSize: '13px', margin: '5px 0 0 0'}}>Deliberação sobre coligações e escolha de candidatos.</p>
-          </div>
-
-          <div style={{borderLeft: '4px solid #e74c3c', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: '#e74c3c', margin: '0 0 5px 0'}}>15 de Agosto</h4>
-            <p style={{color: 'var(--text-light)', fontSize: '15px', margin: '0'}}>Fim do Registro de Candidatura</p>
-            <p style={{color: 'var(--text-muted)', fontSize: '13px', margin: '5px 0 0 0'}}>Prazo máximo para partidos, coligações e federações registrarem os candidatos no TSE.</p>
+            <h4 style={{color: '#d4ac0d', margin: '0 0 5px 0'}}>Setembro: Prestação de Contas e Reta Final</h4>
+            
+            <ul style={{color: 'var(--text-muted)', fontSize: '14px', paddingLeft: '20px', lineHeight: '1.6'}}>
+              <li><strong style={{color: '#fff'}}>09 a 13 de Setembro:</strong> Obrigatório o envio da prestação parcial de contas.</li>
+              <li><strong style={{color: '#fff'}}>14 de Setembro:</strong> Prazo limite para substituição de candidatos (exceto falecimento).</li>
+              <li><strong style={{color: '#fff'}}>19 de Setembro:</strong> Candidatos não podem ser presos (salvo flagrante delito), até 6 de outubro.</li>
+            </ul>
           </div>
 
           <div style={{borderLeft: '4px solid var(--primary)', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: 'var(--primary)', margin: '0 0 5px 0'}}>16 de Agosto</h4>
-            <p style={{color: '#fff', fontSize: '16px', margin: '0', fontWeight: 'bold'}}>Início da Propaganda Eleitoral</p>
-            <p style={{color: 'var(--text-muted)', fontSize: '13px', margin: '5px 0 0 0'}}>Início oficial da campanha nas ruas e na internet.</p>
-          </div>
-
-          <div style={{borderLeft: '4px solid #8e44ad', paddingLeft: '15px', backgroundColor: '#111', padding: '15px', borderRadius: '0 8px 8px 0'}}>
-            <h4 style={{color: '#8e44ad', margin: '0 0 5px 0'}}>04 de Outubro</h4>
-            <p style={{color: '#fff', fontSize: '16px', margin: '0', fontWeight: 'bold'}}>1º Turno das Eleições</p>
+            <h4 style={{color: 'var(--primary)', margin: '0 0 5px 0'}}>Outubro: O Mês da Decisão</h4>
+            
+            <ul style={{color: 'var(--text-muted)', fontSize: '14px', paddingLeft: '20px', lineHeight: '1.6'}}>
+              <li><strong style={{color: '#EF4444'}}>01 de Outubro:</strong> ÚLTIMO DIA para comícios, impulsionamento pago na internet, e fim do horário eleitoral no Rádio/TV.</li>
+              <li><strong style={{color: '#EF4444'}}>02 de Outubro:</strong> ÚLTIMO DIA para propaganda paga em jornais.</li>
+              <li><strong style={{color: '#EF4444'}}>03 de Outubro (Véspera):</strong> ÚLTIMO DIA para carreatas, caminhadas, distribuição de material gráfico e uso de alto-falantes (até as 22h).</li>
+              <li style={{marginTop: '10px'}}><strong style={{color: '#fff', fontSize: '16px'}}>04 de Outubro: 1º TURNO DAS ELEIÇÕES</strong>
+                <ul style={{marginTop: '5px'}}>
+                  <li style={{color: '#EF4444'}}><strong>PROIBIDO NO DIA:</strong> Fazer boca de urna, aglomeração de pessoas com roupas/bandeiras padronizadas, uso de alto-falantes e distribuição de santinhos.</li>
+                  <li style={{color: '#10B981'}}><strong>PERMITIDO NO DIA:</strong> Manifestação individual e silenciosa do eleitor (uso de broche, adesivo, camiseta).</li>
+                </ul>
+              </li>
+            </ul>
           </div>
 
         </div>
